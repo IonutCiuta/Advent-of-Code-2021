@@ -1,12 +1,11 @@
 package com.ionutciuta.aoc2021.day02
 
 import com.ionutciuta.aoc2021.common.Challenge
-import com.ionutciuta.aoc2021.day01.Day01
 
-class Day02: Challenge("day2") {
-    val FWD = "forward"
-    val DOWN = "down"
-    val UP = "up"
+class Day02 : Challenge("day2") {
+    private val FWD = "forward"
+    private val DOWN = "down"
+    private val UP = "up"
 
     override fun solvePart1() {
         var x = 0
