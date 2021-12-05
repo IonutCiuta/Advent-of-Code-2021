@@ -13,21 +13,52 @@ class Day03 : Challenge("day3") {
         }
     }
 
+    private fun binaryListToDec(binary: List<Int>): Int =
+            binary.map { it.toString() }.reduce { s, acc -> s + acc }.toInt(2)
+
     override fun solvePart1() {
         val lines = readLines()
 
         val gammaRate = getMostCommonDigit(lines)
         val epsilonRate = gammaRate.map { 1 - it }
 
-        val gammaRateDec = gammaRate.map { it.toString() }.reduce { s, acc -> s + acc }.toInt(2)
-        val epsilonRateDec = epsilonRate.map { it.toString() }.reduce { s, acc -> s + acc }.toInt(2)
+        val gammaRateDec = binaryListToDec(gammaRate)
+        val epsilonRateDec = binaryListToDec(epsilonRate)
         val power = gammaRateDec * epsilonRateDec
 
         println(power)
     }
 
+    private fun findRating(lines: List<List<Int>>, i: Int, target: Int, filter: (Int, Int) -> Boolean): List<Int> {
+        val count = lines.map { it[i] }.sum()
+
+        val filteredLines = if (count * 1.0 == lines.size / 2.0) {
+            lines.filter { it[i] == target }
+        } else {
+            val mostCommon = if (count > lines.size / 2.0) 1 else 0
+            lines.filter { filter(it[i], mostCommon) }
+        }
+
+        return if (filteredLines.size == 1) {
+            filteredLines[0]
+        } else {
+            val next = i + 1
+            findRating(filteredLines, next, target, filter)
+        }
+    }
+
+    private fun findO2Rating(lines: List<List<Int>>): List<Int> =
+            findRating(lines, 0, 1) { a, b -> a == b }
+
+    private fun findCo2Rating(lines: List<List<Int>>): List<Int> =
+            findRating(lines, 0, 0) { a, b -> a != b }
+
     override fun solvePart2() {
-        TODO("Not yet implemented")
+        val lines = readLines().map { it.toCharArray().map { char -> char - '0' } }
+        val o2Rating = binaryListToDec(findO2Rating(lines))
+        val co2Rating = binaryListToDec(findCo2Rating(lines))
+        val rating = o2Rating * co2Rating
+        println(rating)
     }
 }
 
